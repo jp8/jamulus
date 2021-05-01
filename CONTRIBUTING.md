@@ -36,13 +36,13 @@ git push --force ;# update your working branch on your fork
 ### Supported platforms
 We support the following platforms and versions:
 - Windows 7 or higher
-- macOS <!-- Which versions? -->
+- macOS 10.11 or higher
 - Ubuntu Linux 18.04 or later, Debian 10 or later, most Linux flavors with recent enough Qt versions
-<!-- Do we support BSD? I think a recent discussion was about FreeBSD? -->
-<!-- Should we already list Android? If so, what platforms/versions? -->
+- Andorid and iOS are currently experimental, but not supported.
 
 Please try to avoid breaking any of them by introducing platform-specific code. Check to see if any newly introduced Qt calls are available in the minimum supported Qt version, which is currently 5.9. Note that code _style_ in a file may be Qt 4.x, and while you should normally stick to existing style if making large-scale changes, then updating to Qt 5.9 style is encouraged.
 Keep all code compatible to C++11.
+
 ### Dependencies
 If your code requires new dependencies, be sure that those are available on all supported platforms and that the introduction of those dependencies has been discussed and accepted.
 

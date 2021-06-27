@@ -157,6 +157,7 @@ public:
     int              iNumMixerPanelRows;
     CVector<QString> vstrCentralServerAddress;
     ECSAddType       eCentralServerAddressType;
+    int              iCustomDirectory;
     bool             bEnableFeedbackDetection;
 
     // window position/state settings

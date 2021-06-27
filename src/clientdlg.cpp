@@ -496,7 +496,7 @@ CClientDlg::CClientDlg ( CClient*         pNCliP,
     QObject::connect ( &ClientSettingsDlg,
                        &CClientSettingsDlg::CustomCentralServerAddrChanged,
                        &ConnectDlg,
-                       &CConnectDlg::OnCustomCentralServerAddrChanged );
+                       &CConnectDlg::OnCustomDirectoryServerAddrChanged );
 
     QObject::connect ( &ClientSettingsDlg, &CClientSettingsDlg::NumMixerPanelRowsChanged, this, &CClientDlg::OnNumMixerPanelRowsChanged );
 

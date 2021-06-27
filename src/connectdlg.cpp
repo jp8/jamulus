@@ -26,7 +26,7 @@
 
 /* Implementation *************************************************************/
 CConnectDlg::CConnectDlg ( CClientSettings* pNSetP, const bool bNewShowCompleteRegList, QWidget* parent ) :
-    CBaseDlg ( parent, Qt::Dialog ),
+    QDialog ( parent, Qt::Dialog ),
     pSettings ( pNSetP ),
     strSelectedAddress ( "" ),
     strSelectedServerName ( "" ),
@@ -68,16 +68,7 @@ CConnectDlg::CConnectDlg ( CClientSettings* pNSetP, const bool bNewShowCompleteR
     cbxServerAddr->setAccessibleDescription ( tr ( "Holds the current server "
                                                    "IP address or URL. It also stores old URLs in the combo box list." ) );
 
-    // directory server address type combo box
-    cbxCentServAddrType->clear();
-    cbxCentServAddrType->addItem ( csCentServAddrTypeToString ( AT_DEFAULT ) );
-    cbxCentServAddrType->addItem ( csCentServAddrTypeToString ( AT_ANY_GENRE2 ) );
-    cbxCentServAddrType->addItem ( csCentServAddrTypeToString ( AT_ANY_GENRE3 ) );
-    cbxCentServAddrType->addItem ( csCentServAddrTypeToString ( AT_GENRE_ROCK ) );
-    cbxCentServAddrType->addItem ( csCentServAddrTypeToString ( AT_GENRE_JAZZ ) );
-    cbxCentServAddrType->addItem ( csCentServAddrTypeToString ( AT_GENRE_CLASSICAL_FOLK ) );
-    cbxCentServAddrType->addItem ( csCentServAddrTypeToString ( AT_GENRE_CHORAL ) );
-    cbxCentServAddrType->addItem ( csCentServAddrTypeToString ( AT_CUSTOM ) );
+    UpdateDirectoryServerComboBox();
 
     cbxCentServAddrType->setWhatsThis ( "<b>" + tr ( "Server List Selection" ) + ":</b> " + tr ( "Selects the server list to be shown." ) );
     cbxCentServAddrType->setAccessibleName ( tr ( "Server list selection combo box" ) );
@@ -144,6 +135,10 @@ CConnectDlg::CConnectDlg ( CClientSettings* pNSetP, const bool bNewShowCompleteR
     // set a placeholder text to explain how to filter occupied servers (#397)
     edtFilter->setPlaceholderText ( tr ( "Filter text, or # for occupied servers" ) );
 
+    // install event handler to catch return keys
+    lvwServers->installEventFilter ( this );
+    cbxServerAddr->installEventFilter ( this );
+
     // setup timers
     TimerInitialSort.setSingleShot ( true ); // only once after list request
 
@@ -184,6 +179,36 @@ CConnectDlg::CConnectDlg ( CClientSettings* pNSetP, const bool bNewShowCompleteR
     QObject::connect ( &TimerReRequestServList, &QTimer::timeout, this, &CConnectDlg::OnTimerReRequestServList );
 }
 
+bool CConnectDlg::eventFilter ( QObject* object, QEvent* event )
+{
+    // event handler to catch return keys
+    //   treatment depends on which object the return comes from
+    // return true -> do not handle further
+    // return false -> continue with standard handling
+    if ( event->type() == QEvent::KeyPress )
+    {
+        QKeyEvent* keyEvent = static_cast<QKeyEvent*> ( event );
+        if ( ( keyEvent->key() == Qt::Key_Enter ) || ( keyEvent->key() == Qt::Key_Return ) )
+        {
+            if ( object == cbxServerAddr )
+            {
+                OnServerAddressClicked();
+                return true;
+            }
+            else if ( object == lvwServers )
+            {
+                OnConnectClicked();
+                return true;
+            }
+            else
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 void CConnectDlg::showEvent ( QShowEvent* )
 {
     // load stored IP addresses in combo box
@@ -220,7 +245,7 @@ void CConnectDlg::RequestServerList()
 
     // update list combo box (disable events to avoid a signal)
     cbxCentServAddrType->blockSignals ( true );
-    cbxCentServAddrType->setCurrentIndex ( static_cast<int> ( pSettings->eCentralServerAddressType ) );
+    cbxCentServAddrType->setCurrentIndex ( static_cast<int> ( pSettings->eCentralServerAddressType ) + pSettings->iCustomDirectory);
     cbxCentServAddrType->blockSignals ( false );
 
     // Get the IP address of the directory server (using the ParseNetworAddress
@@ -228,7 +253,7 @@ void CConnectDlg::RequestServerList()
     // time to do it. Note that in case of custom directory server address we
     // use the first entry in the vector per definition.
     if ( NetworkUtil().ParseNetworkAddress (
-             NetworkUtil::GetCentralServerAddress ( pSettings->eCentralServerAddressType, pSettings->vstrCentralServerAddress[0] ),
+             NetworkUtil::GetCentralServerAddress ( pSettings->eCentralServerAddressType, pSettings->vstrCentralServerAddress[pSettings->iCustomDirectory] ),
              CentralServerAddress ) )
     {
         // send the request for the server list
@@ -246,13 +271,6 @@ void CConnectDlg::hideEvent ( QHideEvent* )
     // if window is closed, stop timers
     TimerPing.stop();
     TimerReRequestServList.stop();
-}
-
-void CConnectDlg::OnCentServAddrTypeChanged ( int iTypeIdx )
-{
-    // store the new directory server address type and request new list
-    pSettings->eCentralServerAddressType = static_cast<ECSAddType> ( iTypeIdx );
-    RequestServerList();
 }
 
 void CConnectDlg::OnTimerReRequestServList()
@@ -522,15 +540,6 @@ void CConnectDlg::OnServerAddrEditTextChanged ( const QString& )
     lvwServers->clearSelection();
 }
 
-void CConnectDlg::OnCustomCentralServerAddrChanged()
-{
-    // only update list if the custom server list is selected
-    if ( pSettings->eCentralServerAddressType == AT_CUSTOM )
-    {
-        RequestServerList();
-    }
-}
-
 void CConnectDlg::ShowAllMusicians ( const bool bState )
 {
     bShowAllMusicians = bState;
@@ -644,6 +653,16 @@ void CConnectDlg::UpdateListFilter()
             bListFilterWasActive = false;
         }
     }
+}
+
+void CConnectDlg::OnServerAddressClicked()
+{
+    // get the IP address to be used
+    // - use the current combo box text
+    strSelectedAddress = NetworkUtil::FixAddress ( cbxServerAddr->currentText() );
+
+    // tell the parent window that the connection shall be initiated
+    done ( QDialog::Accepted );
 }
 
 void CConnectDlg::OnConnectClicked()
@@ -886,4 +905,62 @@ void CConnectDlg::DeleteAllListViewItemChilds ( QTreeWidgetItem* pItem )
         // delete the object to avoid a memory leak
         delete pCurChildItem;
     }
+}
+
+void CConnectDlg::OnCustomDirectoryServerAddrChanged()
+{
+    UpdateDirectoryServerComboBox();
+    if ( pSettings->vstrCentralServerAddress[0] == "" )
+    {
+        pSettings->eCentralServerAddressType = static_cast<ECSAddType> ( AT_DEFAULT );
+        pSettings->iCustomDirectory = 0;
+    } else {
+        pSettings->eCentralServerAddressType = static_cast<ECSAddType> ( AT_CUSTOM );
+        pSettings->iCustomDirectory = 0;
+    }
+    RequestServerList();
+}
+
+void CConnectDlg::OnDirectoryServerAddressEditingFinished()
+{
+     OnCustomDirectoryServerAddrChanged();
+}
+
+
+void CConnectDlg::UpdateDirectoryServerComboBox()
+{
+    // directory server address type combo box
+    cbxCentServAddrType->clear();
+    cbxCentServAddrType->addItem ( csCentServAddrTypeToString ( AT_DEFAULT ) );
+    cbxCentServAddrType->addItem ( csCentServAddrTypeToString ( AT_ANY_GENRE2 ) );
+    cbxCentServAddrType->addItem ( csCentServAddrTypeToString ( AT_ANY_GENRE3 ) );
+    cbxCentServAddrType->addItem ( csCentServAddrTypeToString ( AT_GENRE_ROCK ) );
+    cbxCentServAddrType->addItem ( csCentServAddrTypeToString ( AT_GENRE_JAZZ ) );
+    cbxCentServAddrType->addItem ( csCentServAddrTypeToString ( AT_GENRE_CLASSICAL_FOLK ) );
+    cbxCentServAddrType->addItem ( csCentServAddrTypeToString ( AT_GENRE_CHORAL ) );
+//    cbxCentServAddrType->addItem ( csCentServAddrTypeToString ( AT_CUSTOM ) );
+//    add all custom central servers to the list
+    for ( int iLEIdx = 0; iLEIdx < MAX_NUM_SERVER_ADDR_ITEMS; iLEIdx++ )
+    {
+        if ( pSettings->vstrCentralServerAddress[iLEIdx] != "" )
+        {
+            // store the index as user data to the combo box item, too
+            cbxCentServAddrType->addItem ( pSettings->vstrCentralServerAddress[iLEIdx], iLEIdx );
+        }
+    }
+
+}
+
+void CConnectDlg::OnCentServAddrTypeChanged ( int iTypeIdx )
+{
+    if ( iTypeIdx >= AT_CUSTOM)
+    {
+        pSettings->iCustomDirectory = iTypeIdx - AT_CUSTOM;
+        iTypeIdx = AT_CUSTOM;
+    } else {
+        pSettings->iCustomDirectory = 0;
+    }
+    pSettings->eCentralServerAddressType = static_cast<ECSAddType> ( iTypeIdx );
+
+    RequestServerList();
 }

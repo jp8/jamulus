@@ -282,44 +282,38 @@ CClientDlg::CClientDlg ( CClient*         pNCliP,
 
     pFileMenu->addAction ( tr ( "E&xit" ), this, SLOT ( close() ), QKeySequence ( Qt::CTRL + Qt::Key_Q ) );
 
-    // View menu  --------------------------------------------------------------
-    QMenu* pViewMenu = new QMenu ( tr ( "&View" ), this );
-
-    pViewMenu->addAction ( tr ( "&Connection Setup..." ), this, SLOT ( OnOpenConnectionSetupDialog() ), QKeySequence ( Qt::CTRL + Qt::Key_C ) );
-
-    pViewMenu->addAction ( tr ( "C&hat..." ), this, SLOT ( OnOpenChatDialog() ), QKeySequence ( Qt::CTRL + Qt::Key_H ) );
-
-    pViewMenu->addAction ( tr ( "My &Profile..." ), this, SLOT ( OnOpenUserProfileSettings() ), QKeySequence ( Qt::CTRL + Qt::Key_P ) );
-
-    pViewMenu->addAction ( tr ( "Audio/Network &Settings..." ), this, SLOT ( OnOpenAudioNetSettings() ), QKeySequence ( Qt::CTRL + Qt::Key_S ) );
-
-    pViewMenu->addAction ( tr ( "A&dvanced Settings..." ), this, SLOT ( OnOpenAdvancedSettings() ), QKeySequence ( Qt::CTRL + Qt::Key_D ) );
-
-    // optionally show analyzer console entry
-    if ( bShowAnalyzerConsole )
-    {
-        pViewMenu->addAction ( tr ( "&Analyzer Console..." ), this, SLOT ( OnOpenAnalyzerConsole() ) );
-    }
-
     // Edit menu  --------------------------------------------------------------
     QMenu* pEditMenu = new QMenu ( tr ( "&Edit" ), this );
 
-    QAction* NoSortAction =
-        pEditMenu->addAction ( tr ( "N&o User Sorting" ), this, SLOT ( OnNoSortChannels() ), QKeySequence ( Qt::CTRL + Qt::Key_O ) );
+
+    pEditMenu->addAction ( tr ( "Clear &All Stored Solo and Mute Settings" ), this, SLOT ( OnClearAllStoredSoloMuteSettings() ) );
+
+    pEditMenu->addAction ( tr ( "Set All Faders to New Client &Level" ),
+                           this,
+                           SLOT ( OnSetAllFadersToNewClientLevel() ),
+                           QKeySequence ( Qt::CTRL + Qt::Key_L ) );
+
+    pEditMenu->addAction ( tr ( "Auto-Adjust all &Faders" ), this, SLOT ( OnAutoAdjustAllFaderLevels() ), QKeySequence ( Qt::CTRL + Qt::Key_F ) );
+
+    // View menu  --------------------------------------------------------------
+    QMenu* pViewMenu = new QMenu ( tr ( "&View" ), this );
+
+        QAction* NoSortAction =
+        pViewMenu->addAction ( tr ( "N&o User Sorting" ), this, SLOT ( OnNoSortChannels() ), QKeySequence ( Qt::CTRL + Qt::Key_O ) );
 
     QAction* ByNameAction =
-        pEditMenu->addAction ( tr ( "Sort Users by &Name" ), this, SLOT ( OnSortChannelsByName() ), QKeySequence ( Qt::CTRL + Qt::Key_N ) );
+        pViewMenu->addAction ( tr ( "Sort Users by &Name" ), this, SLOT ( OnSortChannelsByName() ), QKeySequence ( Qt::CTRL + Qt::Key_N ) );
 
-    QAction* ByInstrAction = pEditMenu->addAction ( tr ( "Sort Users by &Instrument" ),
+    QAction* ByInstrAction = pViewMenu->addAction ( tr ( "Sort Users by &Instrument" ),
                                                     this,
                                                     SLOT ( OnSortChannelsByInstrument() ),
                                                     QKeySequence ( Qt::CTRL + Qt::Key_I ) );
 
     QAction* ByGroupAction =
-        pEditMenu->addAction ( tr ( "Sort Users by &Group" ), this, SLOT ( OnSortChannelsByGroupID() ), QKeySequence ( Qt::CTRL + Qt::Key_G ) );
+        pViewMenu->addAction ( tr ( "Sort Users by &Group" ), this, SLOT ( OnSortChannelsByGroupID() ), QKeySequence ( Qt::CTRL + Qt::Key_G ) );
 
     QAction* ByCityAction =
-        pEditMenu->addAction ( tr ( "Sort Users by &City" ), this, SLOT ( OnSortChannelsByCity() ), QKeySequence ( Qt::CTRL + Qt::Key_T ) );
+        pViewMenu->addAction ( tr ( "Sort Users by &City" ), this, SLOT ( OnSortChannelsByCity() ), QKeySequence ( Qt::CTRL + Qt::Key_T ) );
 
     // the sorting menu entries shall be checkable and exclusive
     QActionGroup* SortActionGroup = new QActionGroup ( this );
@@ -356,23 +350,49 @@ CClientDlg::CClientDlg ( CClient*         pNCliP,
     }
     MainMixerBoard->SetFaderSorting ( pSettings->eChannelSortType );
 
-    pEditMenu->addSeparator();
 
-    pEditMenu->addAction ( tr ( "Clear &All Stored Solo and Mute Settings" ), this, SLOT ( OnClearAllStoredSoloMuteSettings() ) );
+    // optionally show analyzer console entry
+    if ( bShowAnalyzerConsole )
+    {
+        pViewMenu->addAction ( tr ( "&Analyzer Console..." ), this, SLOT ( OnOpenAnalyzerConsole() ) );
+    }
 
-    pEditMenu->addAction ( tr ( "Set All Faders to New Client &Level" ),
-                           this,
-                           SLOT ( OnSetAllFadersToNewClientLevel() ),
-                           QKeySequence ( Qt::CTRL + Qt::Key_L ) );
+    // Window menu  --------------------------------------------------------------
+    QMenu* pWindowMenu = new QMenu ( tr ( "&Window" ), this );
 
-    pEditMenu->addAction ( tr ( "Auto-Adjust all &Faders" ), this, SLOT ( OnAutoAdjustAllFaderLevels() ), QKeySequence ( Qt::CTRL + Qt::Key_F ) );
+    pWindowMenu->addAction ( tr ( "&Connection Setup..." ), this, SLOT ( OnOpenConnectionSetupDialog() ), QKeySequence ( Qt::CTRL + Qt::Key_C ) );
+
+    pWindowMenu->addAction ( tr ( "C&hat..." ), this, SLOT ( OnOpenChatDialog() ), QKeySequence ( Qt::CTRL + Qt::Key_H ) );
+
+    // optionally show analyzer console entry
+    if ( bShowAnalyzerConsole )
+    {
+        pWindowMenu->addAction ( tr ( "&Analyzer Console..." ), this, SLOT ( OnOpenAnalyzerConsole() ) );
+    }
+
+    // Settings menu  --------------------------------------------------------------
+    QMenu* pSettingsMenu = new QMenu ( tr ( "&Settings" ), this );
+
+    pSettingsMenu->addAction ( tr ( "My &Profile..." ), this, SLOT ( OnOpenUserProfileSettings() ), QKeySequence ( Qt::CTRL + Qt::Key_P ) );
+
+    pSettingsMenu->addAction ( tr ( "Audio/Network &Settings..." ), this, SLOT ( OnOpenAudioNetSettings() ), QKeySequence ( Qt::CTRL + Qt::Key_S ) );
+
+    pSettingsMenu->addAction ( tr ( "A&dvanced Settings..." ), this, SLOT ( OnOpenAdvancedSettings() ), QKeySequence ( Qt::CTRL + Qt::Key_D ) );
+
+    // optionally show analyzer console entry
+    if ( bShowAnalyzerConsole )
+    {
+        pSettingsMenu->addAction ( tr ( "&Analyzer Console..." ), this, SLOT ( OnOpenAnalyzerConsole() ) );
+    }
 
     // Main menu bar -----------------------------------------------------------
     QMenuBar* pMenu = new QMenuBar ( this );
 
     pMenu->addMenu ( pFileMenu );
-    pMenu->addMenu ( pViewMenu );
     pMenu->addMenu ( pEditMenu );
+    pMenu->addMenu ( pViewMenu );
+    pMenu->addMenu ( pWindowMenu );
+    pMenu->addMenu ( pSettingsMenu );
     pMenu->addMenu ( new CHelpMenu ( true, this ) );
 
     // Now tell the layout about the menu

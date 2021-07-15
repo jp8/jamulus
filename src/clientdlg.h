@@ -161,6 +161,12 @@ public slots:
     void OnSortChannelsByInstrument() { MainMixerBoard->SetFaderSorting ( ST_BY_INSTRUMENT ); }
     void OnSortChannelsByGroupID() { MainMixerBoard->SetFaderSorting ( ST_BY_GROUPID ); }
     void OnSortChannelsByCity() { MainMixerBoard->SetFaderSorting ( ST_BY_CITY ); }
+    void OnViewCompact() { pClient->SetGUIDesign ( static_cast<EGUIDesign> ( GD_STANDARD ) ); emit GUIDesignChanged(); }
+    void OnViewNormal() { pClient->SetGUIDesign ( static_cast<EGUIDesign> ( GD_STANDARD ) ); emit GUIDesignChanged(); }
+    void OnViewFancy() { pClient->SetGUIDesign ( static_cast<EGUIDesign> ( GD_STANDARD ) ); emit GUIDesignChanged(); }
+
+ 
+ 
     void OnClearAllStoredSoloMuteSettings();
     void OnSetAllFadersToNewClientLevel() { MainMixerBoard->SetAllFaderLevelsToNewClientLevel(); }
     void OnAutoAdjustAllFaderLevels() { MainMixerBoard->AutoAdjustAllFaderLevels(); }
@@ -233,4 +239,5 @@ public slots:
 
 signals:
     void SendTabChange ( int iTabIdx );
+    void GUIDesignChanged();
 };

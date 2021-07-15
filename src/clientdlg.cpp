@@ -298,7 +298,7 @@ CClientDlg::CClientDlg ( CClient*         pNCliP,
     // View menu  --------------------------------------------------------------
     QMenu* pViewMenu = new QMenu ( tr ( "&View" ), this );
 
-        QAction* NoSortAction =
+    QAction* NoSortAction =
         pViewMenu->addAction ( tr ( "N&o User Sorting" ), this, SLOT ( OnNoSortChannels() ), QKeySequence ( Qt::CTRL + Qt::Key_O ) );
 
     QAction* ByNameAction =
@@ -350,12 +350,21 @@ CClientDlg::CClientDlg ( CClient*         pNCliP,
     }
     MainMixerBoard->SetFaderSorting ( pSettings->eChannelSortType );
 
+    pViewMenu->addSeparator();
 
-    // optionally show analyzer console entry
-    if ( bShowAnalyzerConsole )
-    {
-        pViewMenu->addAction ( tr ( "&Analyzer Console..." ), this, SLOT ( OnOpenAnalyzerConsole() ) );
-    }
+    QAction* SkinCompactAction = pViewMenu->addAction ( tr ( "Compact" ), this, SLOT ( OnViewCompact() ) );
+    QAction* SkinNormalAction = pViewMenu->addAction ( tr ( "Normal" ), this, SLOT ( OnViewNormal() ) );
+    QAction* SkinFancyAction = pViewMenu->addAction ( tr ( "Fancy" ), this, SLOT ( OnViewFancy() ) );
+
+    QActionGroup* SkinActionGroup = new QActionGroup ( this );
+    SkinActionGroup->setExclusive ( true );
+    SkinCompactAction->setCheckable ( true );
+    SkinActionGroup->addAction ( SkinCompactAction );
+    SkinNormalAction->setCheckable ( true );
+    SkinActionGroup->addAction ( SkinNormalAction );
+    SkinFancyAction->setCheckable ( true );
+    SkinActionGroup->addAction ( SkinFancyAction );
+
 
     // Window menu  --------------------------------------------------------------
     QMenu* pWindowMenu = new QMenu ( tr ( "&Window" ), this );

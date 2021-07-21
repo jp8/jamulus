@@ -282,44 +282,104 @@ CClientDlg::CClientDlg ( CClient*         pNCliP,
 
     pFileMenu->addAction ( tr ( "E&xit" ), this, SLOT ( close() ), QKeySequence ( Qt::CTRL + Qt::Key_Q ) );
 
+ 
+     // Connection menu  --------------------------------------------------------------
+    QMenu* pConnectionMenu = new QMenu ( tr ( "&File" ), this );
+
+    pConnectionMenu->addAction ( tr ( "&Connect..." ), this, SLOT ( OnOpenConnectionSetupDialog() ), QKeySequence ( Qt::CTRL + Qt::Key_C ) );
+
+    // pConnectionMenu->addSeparator();
+
+    // pConnectionMenu->addAction ( tr ( "Any Genre 1..." ), this, SLOT ( OnOpenConnectionSetupDialog() ), QKeySequence ( Qt::CTRL + Qt::Key_1 ) );
+    // pConnectionMenu->addAction ( tr ( "Any Genre 2..." ), this, SLOT ( OnOpenConnectionSetupDialog() ), QKeySequence ( Qt::CTRL + Qt::Key_2 ) );
+    // pConnectionMenu->addAction ( tr ( "Any Genre 3..." ), this, SLOT ( OnOpenConnectionSetupDialog() ), QKeySequence ( Qt::CTRL + Qt::Key_3 ) );
+    // pConnectionMenu->addAction ( tr ( "Genre Rock..." ), this, SLOT ( OnOpenConnectionSetupDialog() ), QKeySequence ( Qt::CTRL + Qt::Key_4 ) );
+    // pConnectionMenu->addAction ( tr ( "Genre Jazz..." ), this, SLOT ( OnOpenConnectionSetupDialog() ), QKeySequence ( Qt::CTRL + Qt::Key_5 ) );
+    // pConnectionMenu->addAction ( tr ( "Genre Classical/Folk..." ), this, SLOT ( OnOpenConnectionSetupDialog() ), QKeySequence ( Qt::CTRL + Qt::Key_6 ) );
+    // pConnectionMenu->addAction ( tr ( "Genre Choral/Barbershop..." ), this, SLOT ( OnOpenConnectionSetupDialog() ), QKeySequence ( Qt::CTRL + Qt::Key_7 ) );
+
+    // pConnectionMenu->addSeparator();
+
+    // pConnectionMenu->addAction ( "worldjam.vip...", this, SLOT ( OnOpenConnectionSetupDialog() ) );
+   
+    // pConnectionMenu->addSeparator();
+
+    // QMenu* pRecentMenu = pConnectionMenu->addMenu ( tr ( "Recent Connection" ) );
+    // pRecentMenu->addAction ( "192.168.0.1" );
+    // pRecentMenu->addAction ( "10.0.0.1" );
+    // pRecentMenu->addAction ( "Genre Jazz - JazzLounge" );
+    
+
+    pConnectionMenu->addSeparator();
+
+    pConnectionMenu->addAction ( tr ( "&Load Mix..." ), this, SLOT ( OnLoadChannelSetup() ) );
+
+    pConnectionMenu->addAction ( tr ( "&Save Mix..." ), this, SLOT ( OnSaveChannelSetup() ) );
+
+    // QMenu* pMixSubmenu = pConnectionMenu->addMenu ( tr ( "Recent Mix" ) );
+    // pMixSubmenu->addAction ( "opening song" );
+    // pMixSubmenu->addAction ( "big finale" );
+    
+
+    // pConnectionMenu->addSeparator();
+
+    // pConnectionMenu->addAction ( tr ( "&Disconnect" ), this, SLOT ( OnOpenConnectionSetupDialog() ) );
+
+
+    pConnectionMenu->addSeparator();
+
+    pConnectionMenu->addAction ( tr ( "E&xit" ), this, SLOT ( close() ), QKeySequence ( Qt::CTRL + Qt::Key_Q ) );
+
+
+
+ 
+ 
     // Edit menu  --------------------------------------------------------------
     QMenu* pEditMenu = new QMenu ( tr ( "&Edit" ), this );
 
+    // pEditMenu->addAction ( tr ( "&Undo" ), this, SLOT ( OnLoadChannelSetup() ), QKeySequence ( Qt::CTRL + Qt::Key_U ) );
 
-    pEditMenu->addAction ( tr ( "Clear &All Stored Solo and Mute Settings" ), this, SLOT ( OnClearAllStoredSoloMuteSettings() ) );
+    // pEditMenu->addAction ( tr ( "&Redo" ), this, SLOT ( OnSaveChannelSetup() ), QKeySequence ( Qt::CTRL + Qt::Key_R ) );
 
-    pEditMenu->addAction ( tr ( "Set All Faders to New Client &Level" ),
+    // pEditMenu->addSeparator();
+
+    pEditMenu->addAction ( tr ( "&Clear Solo and Mute Settings" ), this, SLOT ( OnClearAllStoredSoloMuteSettings() ) );
+
+    pEditMenu->addAction ( tr ( "Set Faders to &Default Level" ),
                            this,
                            SLOT ( OnSetAllFadersToNewClientLevel() ),
                            QKeySequence ( Qt::CTRL + Qt::Key_L ) );
 
-    pEditMenu->addAction ( tr ( "Auto-Adjust all &Faders" ), this, SLOT ( OnAutoAdjustAllFaderLevels() ), QKeySequence ( Qt::CTRL + Qt::Key_F ) );
+    pEditMenu->addAction ( tr ( "&Sample and Adjust Faders" ), this, SLOT ( OnAutoAdjustAllFaderLevels() ), QKeySequence ( Qt::CTRL + Qt::Key_F ) );
+
 
     // View menu  --------------------------------------------------------------
     QMenu* pViewMenu = new QMenu ( tr ( "&View" ), this );
 
-    QAction* NoSortAction =
-        pViewMenu->addAction ( tr ( "N&o User Sorting" ), this, SLOT ( OnNoSortChannels() ), QKeySequence ( Qt::CTRL + Qt::Key_O ) );
+    // QMenu* pSortSubmenu = pViewMenu->addMenu( tr ( "&Sort by" ) );
+
+    // QAction* NoSortAction =
+    //     pViewMenu->addAction ( tr ( "N&o Sorting" ), this, SLOT ( OnNoSortChannels() ), QKeySequence ( Qt::CTRL + Qt::Key_O ) );
 
     QAction* ByNameAction =
-        pViewMenu->addAction ( tr ( "Sort Users by &Name" ), this, SLOT ( OnSortChannelsByName() ), QKeySequence ( Qt::CTRL + Qt::Key_N ) );
+        pViewMenu->addAction ( tr ( "Sort by &Name" ), this, SLOT ( OnSortChannelsByName() ), QKeySequence ( Qt::CTRL + Qt::Key_N ) );
 
-    QAction* ByInstrAction = pViewMenu->addAction ( tr ( "Sort Users by &Instrument" ),
+    QAction* ByInstrAction = pViewMenu->addAction ( tr ( "Sort by &Instrument" ),
                                                     this,
                                                     SLOT ( OnSortChannelsByInstrument() ),
                                                     QKeySequence ( Qt::CTRL + Qt::Key_I ) );
 
     QAction* ByGroupAction =
-        pViewMenu->addAction ( tr ( "Sort Users by &Group" ), this, SLOT ( OnSortChannelsByGroupID() ), QKeySequence ( Qt::CTRL + Qt::Key_G ) );
+        pViewMenu->addAction ( tr ( "Sort by &Group" ), this, SLOT ( OnSortChannelsByGroupID() ), QKeySequence ( Qt::CTRL + Qt::Key_G ) );
 
     QAction* ByCityAction =
-        pViewMenu->addAction ( tr ( "Sort Users by &City" ), this, SLOT ( OnSortChannelsByCity() ), QKeySequence ( Qt::CTRL + Qt::Key_T ) );
+        pViewMenu->addAction ( tr ( "Sort by &City" ), this, SLOT ( OnSortChannelsByCity() ), QKeySequence ( Qt::CTRL + Qt::Key_T ) );
 
     // the sorting menu entries shall be checkable and exclusive
     QActionGroup* SortActionGroup = new QActionGroup ( this );
     SortActionGroup->setExclusive ( true );
-    NoSortAction->setCheckable ( true );
-    SortActionGroup->addAction ( NoSortAction );
+    // NoSortAction->setCheckable ( true );
+    // SortActionGroup->addAction ( NoSortAction );
     ByNameAction->setCheckable ( true );
     SortActionGroup->addAction ( ByNameAction );
     ByInstrAction->setCheckable ( true );
@@ -333,7 +393,7 @@ CClientDlg::CClientDlg ( CClient*         pNCliP,
     switch ( pSettings->eChannelSortType )
     {
     case ST_NO_SORT:
-        NoSortAction->setChecked ( true );
+        // NoSortAction->setChecked ( true );
         break;
     case ST_BY_NAME:
         ByNameAction->setChecked ( true );
@@ -350,11 +410,28 @@ CClientDlg::CClientDlg ( CClient*         pNCliP,
     }
     MainMixerBoard->SetFaderSorting ( pSettings->eChannelSortType );
 
+    // pViewMenu->addSeparator();
+
+
+    // QMenu* pRowsMenu = pViewMenu->addMenu( "Rows" );
+    // pRowsMenu->addAction ( "1" );
+    // pRowsMenu->addAction ( "2" );
+    // pRowsMenu->addAction ( "3" );
+    // pRowsMenu->addAction ( "4" );
+    // pRowsMenu->addAction ( "5" );
+    // pRowsMenu->addAction ( "6" );
+    // pRowsMenu->addAction ( "7" );
+    // pRowsMenu->addAction ( "8" );
+    
+
+
     pViewMenu->addSeparator();
 
-    QAction* SkinCompactAction = pViewMenu->addAction ( tr ( "Compact" ), this, SLOT ( OnViewCompact() ) );
-    QAction* SkinNormalAction = pViewMenu->addAction ( tr ( "Normal" ), this, SLOT ( OnViewNormal() ) );
-    QAction* SkinFancyAction = pViewMenu->addAction ( tr ( "Fancy" ), this, SLOT ( OnViewFancy() ) );
+    // QMenu* pSkinSubmenu = pViewMenu->addMenu( "Skin" );
+ 
+    QAction* SkinCompactAction = pViewMenu->addAction ( tr ( "Compact Skin" ), this, SLOT ( OnViewCompact() ) );
+    QAction* SkinNormalAction = pViewMenu->addAction ( tr ( "Normal Skin" ), this, SLOT ( OnViewNormal() ) );
+    QAction* SkinFancyAction = pViewMenu->addAction ( tr ( "Fancy Skin" ), this, SLOT ( OnViewFancy() ) );
 
     QActionGroup* SkinActionGroup = new QActionGroup ( this );
     SkinActionGroup->setExclusive ( true );
@@ -364,6 +441,23 @@ CClientDlg::CClientDlg ( CClient*         pNCliP,
     SkinActionGroup->addAction ( SkinNormalAction );
     SkinFancyAction->setCheckable ( true );
     SkinActionGroup->addAction ( SkinFancyAction );
+
+    pViewMenu->addSeparator();
+
+
+    QAction* ChatAction =
+        pViewMenu->addAction ( tr ( "C&hat" ), this, SLOT ( OnOpenChatDialog() ) );
+    ChatAction->setCheckable ( true );
+
+    pViewMenu->addSeparator();
+
+    // optionally show analyzer console entry
+    if ( bShowAnalyzerConsole )
+    {
+        QAction* AnalyzerAction = pViewMenu->addAction ( tr ( "&Analyzer Console..." ), this, SLOT ( OnOpenAnalyzerConsole() ) );
+        AnalyzerAction->setCheckable ( true );
+
+    }
 
 
     // Window menu  --------------------------------------------------------------
@@ -379,6 +473,22 @@ CClientDlg::CClientDlg ( CClient*         pNCliP,
         pWindowMenu->addAction ( tr ( "&Analyzer Console..." ), this, SLOT ( OnOpenAnalyzerConsole() ) );
     }
 
+    // Bookmarks menu  --------------------------------------------------------------
+    QMenu* pBookmarksMenu = new QMenu ( tr ( "&Bookmarks" ), this );
+
+    pBookmarksMenu->addAction ( tr ( "&Bookmark this connection" ), this, SLOT ( OnOpenConnectionSetupDialog() ), QKeySequence ( Qt::CTRL + Qt::Key_B ) );
+    pBookmarksMenu->addAction ( tr ( "&Edit bookmarks..." ), this, SLOT ( OnOpenConnectionSetupDialog() ), QKeySequence ( Qt::CTRL + Qt::Key_E ) );
+
+    pBookmarksMenu->addSeparator();
+
+    pBookmarksMenu->addAction ( tr ( "Genre Jazz - JazzLounge" ), this, SLOT ( OnOpenChatDialog() ) );
+    pBookmarksMenu->addAction ( tr ( "worldjam.vip - Waiting Room" ), this, SLOT ( OnOpenChatDialog() ) );
+    pBookmarksMenu->addAction ( tr ( "worldjam.vip - Backstage" ), this, SLOT ( OnOpenChatDialog() ) );
+    pBookmarksMenu->addAction ( tr ( "worldjam.vip - Studio London" ), this, SLOT ( OnOpenChatDialog() ) );
+
+
+
+
     // Settings menu  --------------------------------------------------------------
     QMenu* pSettingsMenu = new QMenu ( tr ( "&Settings" ), this );
 
@@ -386,7 +496,9 @@ CClientDlg::CClientDlg ( CClient*         pNCliP,
 
     pSettingsMenu->addAction ( tr ( "Audio/Network &Settings..." ), this, SLOT ( OnOpenAudioNetSettings() ), QKeySequence ( Qt::CTRL + Qt::Key_S ) );
 
-    pSettingsMenu->addAction ( tr ( "A&dvanced Settings..." ), this, SLOT ( OnOpenAdvancedSettings() ), QKeySequence ( Qt::CTRL + Qt::Key_D ) );
+    pSettingsMenu->addAction ( tr ( "&Advanced Settings..." ), this, SLOT ( OnOpenAdvancedSettings() ), QKeySequence ( Qt::CTRL + Qt::Key_D ) );
+
+    // pSettingsMenu->addAction ( tr ( "Edit &Directories..." ), this, SLOT ( OnOpenAdvancedSettings() ), QKeySequence ( Qt::CTRL + Qt::Key_D ) );
 
     // optionally show analyzer console entry
     if ( bShowAnalyzerConsole )
@@ -397,10 +509,12 @@ CClientDlg::CClientDlg ( CClient*         pNCliP,
     // Main menu bar -----------------------------------------------------------
     QMenuBar* pMenu = new QMenuBar ( this );
 
-    pMenu->addMenu ( pFileMenu );
+    // pMenu->addMenu ( pFileMenu );
+    pMenu->addMenu ( pConnectionMenu );
     pMenu->addMenu ( pEditMenu );
     pMenu->addMenu ( pViewMenu );
-    pMenu->addMenu ( pWindowMenu );
+    // pMenu->addMenu ( pWindowMenu );
+    // pMenu->addMenu ( pBookmarksMenu );
     pMenu->addMenu ( pSettingsMenu );
     pMenu->addMenu ( new CHelpMenu ( true, this ) );
 

@@ -345,12 +345,12 @@ CClientDlg::CClientDlg ( CClient*         pNCliP,
 
     pEditMenu->addAction ( tr ( "&Clear Solo and Mute Settings" ), this, SLOT ( OnClearAllStoredSoloMuteSettings() ) );
 
-    pEditMenu->addAction ( tr ( "Set Faders to &Default Level" ),
+    pEditMenu->addAction ( tr ( "Set Faders to Default &Level" ),
                            this,
                            SLOT ( OnSetAllFadersToNewClientLevel() ),
                            QKeySequence ( Qt::CTRL + Qt::Key_L ) );
 
-    pEditMenu->addAction ( tr ( "&Sample and Adjust Faders" ), this, SLOT ( OnAutoAdjustAllFaderLevels() ), QKeySequence ( Qt::CTRL + Qt::Key_F ) );
+    pEditMenu->addAction ( tr ( "Sample and Adjust &Faders" ), this, SLOT ( OnAutoAdjustAllFaderLevels() ), QKeySequence ( Qt::CTRL + Qt::Key_F ) );
 
 
     // View menu  --------------------------------------------------------------
@@ -425,28 +425,28 @@ CClientDlg::CClientDlg ( CClient*         pNCliP,
     
 
 
-    pViewMenu->addSeparator();
+    // pViewMenu->addSeparator();
 
     // QMenu* pSkinSubmenu = pViewMenu->addMenu( "Skin" );
  
-    QAction* SkinCompactAction = pViewMenu->addAction ( tr ( "Compact Skin" ), this, SLOT ( OnViewCompact() ) );
-    QAction* SkinNormalAction = pViewMenu->addAction ( tr ( "Normal Skin" ), this, SLOT ( OnViewNormal() ) );
-    QAction* SkinFancyAction = pViewMenu->addAction ( tr ( "Fancy Skin" ), this, SLOT ( OnViewFancy() ) );
+    // QAction* SkinCompactAction = pViewMenu->addAction ( tr ( "Compact Skin" ), this, SLOT ( OnViewCompact() ) );
+    // QAction* SkinNormalAction = pViewMenu->addAction ( tr ( "Normal Skin" ), this, SLOT ( OnViewNormal() ) );
+    // QAction* SkinFancyAction = pViewMenu->addAction ( tr ( "Fancy Skin" ), this, SLOT ( OnViewFancy() ) );
 
-    QActionGroup* SkinActionGroup = new QActionGroup ( this );
-    SkinActionGroup->setExclusive ( true );
-    SkinCompactAction->setCheckable ( true );
-    SkinActionGroup->addAction ( SkinCompactAction );
-    SkinNormalAction->setCheckable ( true );
-    SkinActionGroup->addAction ( SkinNormalAction );
-    SkinFancyAction->setCheckable ( true );
-    SkinActionGroup->addAction ( SkinFancyAction );
+    // QActionGroup* SkinActionGroup = new QActionGroup ( this );
+    // SkinActionGroup->setExclusive ( true );
+    // SkinCompactAction->setCheckable ( true );
+    // SkinActionGroup->addAction ( SkinCompactAction );
+    // SkinNormalAction->setCheckable ( true );
+    // SkinActionGroup->addAction ( SkinNormalAction );
+    // SkinFancyAction->setCheckable ( true );
+    // SkinActionGroup->addAction ( SkinFancyAction );
 
     pViewMenu->addSeparator();
 
 
     QAction* ChatAction =
-        pViewMenu->addAction ( tr ( "C&hat" ), this, SLOT ( OnOpenChatDialog() ) );
+        pViewMenu->addAction ( tr ( "C&hat" ), this, SLOT ( OnOpenChatDialog() ), QKeySequence ( Qt::CTRL + Qt::Key_H ) );
     ChatAction->setCheckable ( true );
 
     pViewMenu->addSeparator();
@@ -496,7 +496,7 @@ CClientDlg::CClientDlg ( CClient*         pNCliP,
 
     pSettingsMenu->addAction ( tr ( "Audio/Network &Settings..." ), this, SLOT ( OnOpenAudioNetSettings() ), QKeySequence ( Qt::CTRL + Qt::Key_S ) );
 
-    pSettingsMenu->addAction ( tr ( "&Advanced Settings..." ), this, SLOT ( OnOpenAdvancedSettings() ), QKeySequence ( Qt::CTRL + Qt::Key_D ) );
+    pSettingsMenu->addAction ( tr ( "A&dvanced Settings..." ), this, SLOT ( OnOpenAdvancedSettings() ), QKeySequence ( Qt::CTRL + Qt::Key_D ) );
 
     // pSettingsMenu->addAction ( tr ( "Edit &Directories..." ), this, SLOT ( OnOpenAdvancedSettings() ), QKeySequence ( Qt::CTRL + Qt::Key_D ) );
 
